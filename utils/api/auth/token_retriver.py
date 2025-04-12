@@ -8,7 +8,7 @@ load_dotenv()
 BITBUCKET_USERNAME = os.getenv("BITBUCKET_USERNAME")
 BITBUCKET_PASSWORD = os.getenv("BITBUCKET_PASSWORD")
 BITBUCKET_ORGANIZATION_NAME = os.getenv("BITBUCKET_ORGANIZATION_NAME")
-BITBUCKET_LOGIN_URL = "https://bitbucket.org/account/signin/"
+BITBUCKET_LOGIN_URL = "https://bitbucket.org/test1_nz/workspace/repositories/"
 
 
 class TokenRetriever:

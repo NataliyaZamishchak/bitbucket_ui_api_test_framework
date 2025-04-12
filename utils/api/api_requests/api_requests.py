@@ -15,8 +15,13 @@ class ApiRequests:
             "Accept": "application/json"
         }
         payload = {
+            "type": "repository",
             "scm": "git",
-            "is_private": is_private
+            "is_private": is_private,
+            "project": {
+                "name": "test2"
+            },
+            "name": repo_slug      
         }
         response = requests.post(url, headers=headers, json=payload)
         return response

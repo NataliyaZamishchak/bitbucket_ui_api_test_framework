@@ -1,4 +1,5 @@
 requests
 pytest
+pytest-order
 playwright
 python-dotenv
