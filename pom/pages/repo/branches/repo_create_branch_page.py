@@ -31,3 +31,4 @@ class CreateBranchPage:
 
     def click_create_button(self):
         self.create_button.click()
+        self.page.wait_for_selector('[data-qa="commit-list-styles"]')
