@@ -1,9 +1,12 @@
+import os
+
 from playwright.sync_api import Page, BrowserContext
 
 class AtlassianLoginPage:
-    def __init__(self, page: Page, context: BrowserContext):
+    def __init__(self, page: Page, context: BrowserContext, workspace: str):
         self.page = page
         self.context = context
+        self.workspace = workspace
 
     @property
     def login_state(self):
@@ -32,22 +35,29 @@ class AtlassianLoginPage:
     @property
     def user_logo(self):
         return self.page.locator('//img[@alt="Account"]')
-    
+
     @property
     def success_login_img(self):
-        return self.page.locator('[data-testid="nav-profile-button--trigger"]')
+        return self.page.locator('[data-testid="profile-button"]')
+
+    def is_success_login_img_visible(self):
+        self.success_login_img.wait_for(timeout=10000, state="visible")
+        return self.success_login_img.is_visible()
     
     def goto(self):
-        self.page.goto('https://atlassian.com/')
-        self.login_state.wait_for()
+        self.page.goto(f'https://bitbucket.org/{self.workspace}/workspace/overview/')
+
 
     def login(self, username: str, password: str):
         self.goto()
+
+        if self.is_success_login_img_visible():
+            return
+
         self.login_state.wait_for()
         self.signin_button.click()
-        self.success_login_img.wait_for(timeout=5000)
 
-        if self.success_login_img.is_visible():
+        if self.is_success_login_img_visible():
             return
         
         self.email_input.fill(username)

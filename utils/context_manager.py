@@ -1,5 +1,7 @@
 import os
 from playwright.sync_api import sync_playwright
+from dotenv import load_dotenv
+load_dotenv()
 
 CONTEXT_FILE = "playwright_context.json"
 
