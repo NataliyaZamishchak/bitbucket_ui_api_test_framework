@@ -8,6 +8,8 @@ from utils.api.token_manager import TokenManager
 from utils.context_manager import load_or_login_context
 from dotenv import load_dotenv
 
+from utils.logger import get_logger
+
 load_dotenv()
 
 @pytest.fixture(scope="session")
@@ -90,3 +92,8 @@ def bitbucket_api(workspace):
     token_manager = TokenManager(workspace)
     token = token_manager.get_or_refresh_token()
     return ApiRequests(token=token, workspace=workspace)
+
+@pytest.fixture(scope="session")
+def logger():
+    return get_logger(__name__)
+
