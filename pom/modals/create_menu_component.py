@@ -30,3 +30,10 @@ class CreateMenu:
             if option == element.text_content():
                 element.click()
                 return
+
+    def validate_if_exists_create_menu_repo_option(self, option: str):
+        elements = self.create_menu_repo_options.element_handles()
+        for element in elements:
+            if option == element.text_content():
+                return True
+        return False

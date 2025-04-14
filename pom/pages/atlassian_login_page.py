@@ -48,17 +48,18 @@ class AtlassianLoginPage:
         self.page.goto(f'https://bitbucket.org/{self.workspace}/workspace/overview/')
 
 
-    def login(self, username: str, password: str):
+    def login(self, username: str, password: str, save_state: bool = True):
         self.goto()
 
-        if self.is_success_login_img_visible():
-            return
+        if save_state:
+            if self.is_success_login_img_visible():
+                return
 
-        self.login_state.wait_for()
-        self.signin_button.click()
+            self.login_state.wait_for()
+            self.signin_button.click()
 
-        if self.is_success_login_img_visible():
-            return
+            if self.is_success_login_img_visible():
+                return
         
         self.email_input.fill(username)
         self.continue_button.click()
@@ -66,4 +67,6 @@ class AtlassianLoginPage:
         self.login_button.click()
 
         self.success_login_img.wait_for()
-        self.context.storage_state(path="browser-context.json")
+
+        if save_state:
+            self.context.storage_state(path="browser-context.json")

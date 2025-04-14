@@ -6,3 +6,7 @@ __pycache__/
 .pytest_cache/
 playwright_context.json
 .vscode/
+screenshots/
+allure-results/
+allure-report/
+cloned_repo/

@@ -40,7 +40,11 @@ class RepoPrPage:
         tab.click()
 
     def goto(self):
-        self.page.goto(f'https://bitbucket.org/{self.workspace}/{self.repo}/pull-requests/{self.pr_number}')
+        if self.pr_number:
+            url = f'https://bitbucket.org/{self.workspace}/{self.repo}/pull-requests/{self.pr_number}'
+        else:
+            url = f'https://bitbucket.org/{self.workspace}/{self.repo}/pull-requests'
+        self.page.goto(url)
 
     def validate_if_added_line_contains_text(self, text: str) -> bool:
         added_line_text = self.code_diff_added_line.get_attribute('aria-label')

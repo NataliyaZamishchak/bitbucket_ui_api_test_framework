@@ -19,31 +19,31 @@ ADD_NEW_TEXT_CHANGES = "Add new text to README.md"
 DEFAULT_COMMIT_MESSAGE = 'README.md edited online with Bitbucket'
 
 class TestsWebUi:
-    def test_login_setup(self, page, bitbucket_username, bitbucket_password, bitbucket_organization):
-        login_page = AtlassianLoginPage(page, page.context, bitbucket_organization)
-        login_page.login(bitbucket_username, bitbucket_password)
+    def test_login_setup(self, page, username_1, password_1, workspace):
+        login_page = AtlassianLoginPage(page, page.context, workspace)
+        login_page.login(username_1, password_1)
         assert login_page.success_login_img.is_visible(), "Login failed or success image not visible."
 
-    def test_create_repo(self, page, bitbucket_organization):
-        overview_page = OverviewPage(page, bitbucket_organization)
+    def test_create_repo(self, page, workspace):
+        overview_page = OverviewPage(page, workspace)
         overview_page.goto()
         overview_page.header.click_create_button()
         create_menu = CreateMenu(page)
         create_menu.click_create_menu_option("Repository")
-        create_repo_page = CreateRepoPage(page, bitbucket_organization)
+        create_repo_page = CreateRepoPage(page, workspace)
         create_repo_page.select_first_project()
         create_repo_page.repo_name_input.fill(TEST_REPO_NAME)
         create_repo_page.click_create_button()
-        repo_page = RepoSourcePage(page, bitbucket_organization, TEST_REPO_NAME)
+        repo_page = RepoSourcePage(page, workspace, TEST_REPO_NAME)
         assert repo_page.page_title.text_content() == TEST_REPO_NAME
 
-    def test_create_pr(self, page, bitbucket_organization):
-        repo_page = RepoSourcePage(page, bitbucket_organization, TEST_REPO_NAME)
+    def test_create_pr(self, page, workspace):
+        repo_page = RepoSourcePage(page, workspace, TEST_REPO_NAME)
         repo_page.goto()
         repo_page.header.click_create_button()
         create_menu = CreateMenu(page)
         create_menu.click_create_menu_repo_option("Branch")
-        create_branch_page = CreateBranchPage(page, bitbucket_organization, TEST_REPO_NAME)
+        create_branch_page = CreateBranchPage(page, workspace, TEST_REPO_NAME)
         create_branch_page.select_branch_type('Feature')
         create_branch_page.branch_name_input.fill(TEST_BRANCH_NAME)
         create_branch_page.click_create_button()
@@ -68,12 +68,12 @@ class TestsWebUi:
         create_pr_page.click_create_pr_button()
         pr_page = RepoPrPage(page)
         assert pr_page.page_title.text_content() == DEFAULT_COMMIT_MESSAGE
-        expected_pr_url = f'https://bitbucket.org/{bitbucket_organization}/{TEST_REPO_NAME}/pull-requests/1'
+        expected_pr_url = f'https://bitbucket.org/{workspace}/{TEST_REPO_NAME}/pull-requests/1'
         assert pr_page.page.url == expected_pr_url
         assert pr_page.pr_status.text_content() == "Open"
 
-    def test_review_pr_and_merge(self, page, bitbucket_organization):
-        pr_page = RepoPrPage(page, bitbucket_organization, TEST_REPO_NAME, 1)
+    def test_review_pr_and_merge(self, page, workspace):
+        pr_page = RepoPrPage(page, workspace, TEST_REPO_NAME, 1)
         pr_page.goto()
         assert pr_page.page_title.text_content() == DEFAULT_COMMIT_MESSAGE
         assert pr_page.pr_status.text_content() == "Open"
@@ -87,4 +87,3 @@ class TestsWebUi:
         merge_pr_modal = MergePrModal(page)
         merge_pr_modal.click_merge_button()
         assert pr_page.pr_status.text_content() == "Merged"
-

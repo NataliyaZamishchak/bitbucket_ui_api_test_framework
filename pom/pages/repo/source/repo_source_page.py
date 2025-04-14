@@ -16,8 +16,13 @@ class RepoSourcePage:
     def page_title(self):
         return self.page.locator("header h1")
 
+    @property
+    def page_error(self):
+        return self.page.locator("#error h1")
+
     def goto(self):
-        self.page.goto(f'https://bitbucket.org/{self.workspace}/{self.repo}/src/main/')
+        url = f'https://bitbucket.org/{self.workspace}/{self.repo}/src/main/'
+        self.page.goto(url)
 
     def click_target_file(self, file_name: str):
         self.page.locator(f'//table[@data-qa="repository-directory"]//a[contains(@href, "{file_name}")]').click()

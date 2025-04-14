@@ -1,4 +1,6 @@
 requests
 pytest
+pytest-xdist
 playwright
 python-dotenv
+allure-pytest
