@@ -1,42 +1,46 @@
+import json
+
 import requests
 import uuid
 import pytest
 
-@pytest.fixture(scope="module")
-def repo_slug():
-    return f"test-repo-{uuid.uuid4().hex[:6]}"
+class TestsApi:
 
-def test_create_repository(bitbucket_api, repo_slug):
-    response = bitbucket_api.create_repo(repo_slug)
+    @pytest.fixture(scope="module")
+    def repo_slug(self):
+        return f"test-repo-{uuid.uuid4().hex[:6]}"
 
-    assert response.status_code in [201, 200], f"Unexpected status: {response.status_code}"
-    assert response.json()["slug"] == repo_slug
+    def test_create_repository(self, bitbucket_api, project_key, repo_slug):
+        response = bitbucket_api.create_repo(project_key, repo_slug)
 
-# def test_list_and_validate_repository(base_url, bitbucket_auth, repo_slug):
-#     username = bitbucket_auth.username
-#     url = f"{base_url}/{username}/{repo_slug}"
+        assert response.status_code in [201, 200], f"Unexpected status: {response.status_code}"
+        assert response.json().get("slug", "") == repo_slug
 
-#     response = requests.get(url, auth=bitbucket_auth)
-#     assert response.status_code == 200
-#     repo_data = response.json()
-#     assert repo_data["slug"] == repo_slug
-#     assert repo_data["is_private"] is True
+    def test_list_and_validate_repository(self, bitbucket_api, repo_slug):
+        response = bitbucket_api.get_repo_info(repo_slug)
 
-# def test_branch_and_commit_operations(base_url, bitbucket_auth, repo_slug):
-#     # Бітбакет API не дозволяє комітити напряму через REST
-#     # Але можна отримати список бранчів
-#     username = bitbucket_auth.username
-#     branches_url = f"{base_url}/{username}/{repo_slug}/refs/branches"
+        assert response.status_code == 200, f"Unexpected status: {response.status_code}"
+        repo_data = response.json()
+        assert repo_data.get("slug", "") == repo_slug
+        assert repo_data.get("is_private", False) is True
 
-#     response = requests.get(branches_url, auth=bitbucket_auth)
-#     assert response.status_code == 200
-#     data = response.json()
-#     assert "values" in data
-#     assert any(branch["name"] == "main" or branch["name"] == "master" for branch in data["values"])
+    def test_branching_model(self, bitbucket_api, repo_slug):
+        response = bitbucket_api.get_branching_model(repo_slug)
 
-# def test_delete_repository(base_url, bitbucket_auth, repo_slug):
-#     username = bitbucket_auth.username
-#     url = f"{base_url}/{username}/{repo_slug}"
+        assert response.status_code == 200, f"Unexpected status: {response.status_code}"
+        assert response.json().get("development", {}).get("use_mainbranch")
 
-#     response = requests.delete(url, auth=bitbucket_auth)
-#     assert response.status_code == 204
+    def test_list_commits(self, bitbucket_api, repo_slug, git_repo_name):
+        response = bitbucket_api.get_list_commits(repo_slug)
+
+        assert response.status_code == 200, f"Unexpected status: {response.status_code}"
+        assert response.json().get("size", 0) == 0
+
+        response = bitbucket_api.get_list_commits(git_repo_name)
+
+        assert response.status_code == 200, f"Unexpected status: {response.status_code}"
+        assert response.json().get("pagelen", 0) > 0
+
+    def test_delete_repository(self, bitbucket_api, repo_slug):
+        response = bitbucket_api.delete_repo(repo_slug)
+        assert response.status_code == 204
