@@ -1,25 +1,19 @@
 import os
 import pytest
-import allure
 from pathlib import Path
 from playwright.sync_api import sync_playwright
-
+from utils.git_utils import delete_cloned_repo
 from utils.api.api_requests import ApiRequests
 from utils.api.token_manager import TokenManager
 from utils.context_manager import load_or_login_context
 from dotenv import load_dotenv
 
-from utils.git_utils import delete_cloned_repo
-
 load_dotenv()
 
-SCREENSHOT_DIR = Path("screenshots")
-SCREENSHOT_DIR.mkdir(exist_ok=True)
-
 @pytest.fixture(scope="session")
-def browser_context():
+def browser_context(admin_email, admin_password):
     with sync_playwright() as playwright:
-        context = load_or_login_context(playwright)
+        context = load_or_login_context(playwright, admin_email, admin_password)
         yield context
         context.close()
 
@@ -45,32 +39,28 @@ def fresh_page(fresh_context):
     page.close()
 
 @pytest.fixture(scope="session")
-def username_1():
-    return os.getenv("BITBUCKET_USERNAME")
+def admin_email():
+    return os.getenv("ADMIN_EMAIL")
 
 @pytest.fixture(scope="session")
-def password_1():
-    return os.getenv("BITBUCKET_PASSWORD")
+def admin_password():
+    return os.getenv("ADMIN_PASSWORD")
 
 @pytest.fixture(scope="session")
-def username_2():
-    return os.getenv("BITBUCKET_USERNAME_1")
+def read_email():
+    return os.getenv("READ_EMAIL")
 
 @pytest.fixture(scope="session")
-def password_2():
-    return os.getenv("BITBUCKET_PASSWORD_1")
+def read_password():
+    return os.getenv("READ_PASSWORD")
 
 @pytest.fixture(scope="session")
-def full_username_2():
-    return os.getenv("BITBUCKET_FULL_USERNAME_1")
+def read_full_username():
+    return os.getenv("READ_FULL_USERNAME")
 
 @pytest.fixture(scope="session")
 def workspace():
-    return os.getenv("BITBUCKET_ORGANIZATION_NAME")
-
-@pytest.fixture(scope="session")
-def project_key():
-    return os.getenv("BITBUCKET_PROJECT_KEY")
+    return os.getenv("WORKSPACE")
 
 @pytest.fixture(scope="session")
 def git_repo_name():
@@ -96,9 +86,7 @@ def cleanup_repo(cloned_repo_path):
         delete_cloned_repo(cloned_repo_path)
 
 @pytest.fixture(scope="session")
-def bitbucket_api():
-    token_manager = TokenManager()
+def bitbucket_api(workspace):
+    token_manager = TokenManager(workspace)
     token = token_manager.get_or_refresh_token()
-    return ApiRequests(token=token, workspace=os.getenv("BITBUCKET_ORGANIZATION_NAME"))
-
-
+    return ApiRequests(token=token, workspace=workspace)

@@ -3,6 +3,7 @@ from utils.git_utils import clone_repo, create_test_file, git_status, git_add_al
 import os
 
 class TestsGitOperations:
+
     def test_clone_repo(self, git_repo_url, cloned_repo_path):
         clone_repo(git_repo_url, dest_folder=cloned_repo_path)
         assert os.path.exists(f"{cloned_repo_path}/.git")

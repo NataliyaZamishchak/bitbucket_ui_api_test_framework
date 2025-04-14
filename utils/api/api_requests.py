@@ -1,5 +1,3 @@
-import json
-
 import requests
 
 class ApiRequests:
@@ -12,7 +10,7 @@ class ApiRequests:
             "Accept": "application/json"
         }
 
-    def create_repo(self, project_key: str, repo_slug: str, is_private: bool = True):
+    def create_repo(self, repo_slug: str, is_private: bool = True):
         url = f"{self.base_url}/{repo_slug}"
         print(f"\nCreating repository at {url} with slug {repo_slug} and privacy {is_private}...")
         headers = {
@@ -21,9 +19,6 @@ class ApiRequests:
         headers.update(self.headers)
         payload = {
             "scm": "git",
-            "project": {
-                "key": project_key
-            },
             "is_private": is_private
         }
         response = requests.post(url=url, headers=headers, json=payload)

@@ -1,7 +1,7 @@
 .PHONY: test report clean
 
 test:
-	pytest --alluredir=allure-results
+	pytest -n 4 --dist=loadscope --alluredir=allure-results
 
 report:
 	allure generate allure-results --clean -o allure-report

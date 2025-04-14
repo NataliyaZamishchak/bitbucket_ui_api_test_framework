@@ -1,6 +1,3 @@
-import json
-
-import requests
 import uuid
 import pytest
 
@@ -10,8 +7,8 @@ class TestsApi:
     def repo_slug(self):
         return f"test-repo-{uuid.uuid4().hex[:6]}"
 
-    def test_create_repository(self, bitbucket_api, project_key, repo_slug):
-        response = bitbucket_api.create_repo(project_key, repo_slug)
+    def test_create_repository(self, bitbucket_api, repo_slug):
+        response = bitbucket_api.create_repo(repo_slug)
 
         assert response.status_code in [201, 200], f"Unexpected status: {response.status_code}"
         assert response.json().get("slug", "") == repo_slug

@@ -25,9 +25,9 @@ ERROR_SOURCE_REPO_PAGE = 'Repository not found'
 
 class TestsPermissionsWebUi:
 
-    def test_create_repo_for_permissions_tests(self, fresh_page, workspace, username_1, password_1):
+    def test_create_repo_for_permissions_tests(self, fresh_page, workspace, admin_email, admin_password):
         login_page = AtlassianLoginPage(fresh_page, fresh_page.context, workspace)
-        login_page.login(username_1, password_1, save_state=False)
+        login_page.login(admin_email, admin_password, save_state=False)
         assert login_page.success_login_img.is_visible(), "Login failed or success image not visible."
         overview_page = OverviewPage(fresh_page, workspace)
         overview_page.goto()
@@ -41,9 +41,9 @@ class TestsPermissionsWebUi:
         repo_page = RepoSourcePage(fresh_page, workspace, TEST_REPO_NAME)
         assert repo_page.page_title.text_content() == TEST_REPO_NAME
 
-    def test_create_pr_for_permissions_tests(self, fresh_page, workspace, username_1, password_1):
+    def test_create_pr_for_permissions_tests(self, fresh_page, workspace, admin_email, admin_password):
         login_page = AtlassianLoginPage(fresh_page, fresh_page.context, workspace)
-        login_page.login(username_1, password_1, save_state=False)
+        login_page.login(admin_email, admin_password, save_state=False)
         assert login_page.success_login_img.is_visible(), "Login failed or success image not visible."
         repo_page = RepoSourcePage(fresh_page, workspace, TEST_REPO_NAME)
         repo_page.goto()
@@ -79,10 +79,10 @@ class TestsPermissionsWebUi:
         assert pr_page.page.url == expected_pr_url
         assert pr_page.pr_status.text_content() == "Open"
 
-    def test_give_user2_read_permissions_to_repo(self, fresh_page, workspace, username_1, password_1, full_username_2):
-        # TEST_REPO_NAME = "test_repo_permissions_e588193d"
+    def test_give_user2_read_permissions_to_repo(self, fresh_page, workspace, admin_email, admin_password,
+                                                 read_full_username):
         login_page = AtlassianLoginPage(fresh_page, fresh_page.context, workspace)
-        login_page.login(username_1, password_1, save_state=False)
+        login_page.login(admin_email, admin_password, save_state=False)
         assert login_page.success_login_img.is_visible(), "Login failed or success image not visible."
         repo_page = RepoSourcePage(fresh_page, workspace, TEST_REPO_NAME)
         repo_page.goto()
@@ -92,20 +92,19 @@ class TestsPermissionsWebUi:
         repo_permissions_page = RepoPermissionsPage(fresh_page)
         repo_permissions_page.click_add_user_or_group_button()
         add_users_modal = AddUserOrGroupsModal(fresh_page)
-        add_users_modal.select_user_to_add(full_username_2)
+        add_users_modal.select_user_to_add(read_full_username)
         add_users_modal.click_confirm_button()
         repo_permissions_page.page_title.wait_for(state="visible")
         repo_permissions_page.permission_table.wait_for(state="visible")
         assert repo_permissions_page.page_title.is_visible()
         assert repo_permissions_page.permission_table.is_visible()
-        user_data = repo_permissions_page.users_permissions_table.get_user_row_data(full_username_2)
+        user_data = repo_permissions_page.users_permissions_table.get_user_row_data(read_full_username)
         assert user_data.get("Permission", '') == "Read"
         assert user_data.get("Access level", '') == "Repository"
 
-    def test_user2_login_with_read_permissions_to_repo(self, fresh_page, workspace, username_2, password_2):
-        # TEST_REPO_NAME = "test_repo_permissions_22936a3a"
+    def test_user2_login_with_read_permissions_to_repo(self, fresh_page, workspace, read_email, read_password):
         login_page = AtlassianLoginPage(fresh_page, fresh_page.context, workspace)
-        login_page.login(username_2, password_2, save_state=False)
+        login_page.login(read_email, read_password, save_state=False)
         assert login_page.success_login_img.is_visible(), "Login failed or success image not visible."
         repo_page = RepoSourcePage(fresh_page, workspace, TEST_REPO_NAME)
         repo_page.goto()
@@ -126,10 +125,10 @@ class TestsPermissionsWebUi:
         assert pr_page.approve_button.is_enabled()
         assert pr_page.merge_button.count() == 0
 
-    def test_give_user2_write_permissions_to_repo(self, fresh_page, workspace, username_1, password_1, full_username_2):
-        # TEST_REPO_NAME = "test_repo_permissions_22936a3a"
+    def test_give_user2_write_permissions_to_repo(self, fresh_page, workspace, admin_email, admin_password,
+                                                  read_full_username):
         login_page = AtlassianLoginPage(fresh_page, fresh_page.context, workspace)
-        login_page.login(username_1, password_1, save_state=False)
+        login_page.login(admin_email, admin_password, save_state=False)
         assert login_page.success_login_img.is_visible(), "Login failed or success image not visible."
         repo_page = RepoSourcePage(fresh_page, workspace, TEST_REPO_NAME)
         repo_page.goto()
@@ -141,15 +140,14 @@ class TestsPermissionsWebUi:
         repo_permissions_page.permission_table.wait_for(state="visible")
         assert repo_permissions_page.page_title.is_visible()
         assert repo_permissions_page.permission_table.is_visible()
-        repo_permissions_page.users_permissions_table.set_user_permission(full_username_2, 'Write')
-        user_data = repo_permissions_page.users_permissions_table.get_user_row_data(full_username_2)
+        repo_permissions_page.users_permissions_table.set_user_permission(read_full_username, 'Write')
+        user_data = repo_permissions_page.users_permissions_table.get_user_row_data(read_full_username)
         assert user_data.get("Permission", '') == "Write"
         assert user_data.get("Access level", '') == "Repository"
 
-    def test_user2_login_with_write_permissions_to_repo(self, fresh_page, workspace, username_2, password_2):
-        # TEST_REPO_NAME = "test_repo_permissions_22936a3a"
+    def test_user2_login_with_write_permissions_to_repo(self, fresh_page, workspace, read_email, read_password):
         login_page = AtlassianLoginPage(fresh_page, fresh_page.context, workspace)
-        login_page.login(username_2, password_2, save_state=False)
+        login_page.login(read_email, read_password, save_state=False)
         assert login_page.success_login_img.is_visible(), "Login failed or success image not visible."
         repo_page = RepoSourcePage(fresh_page, workspace, TEST_REPO_NAME)
         repo_page.goto()
@@ -196,10 +194,10 @@ class TestsPermissionsWebUi:
         merge_pr_modal.click_merge_button()
         assert pr_page.pr_status.text_content() == "Merged"
 
-    def test_user2_delete_permissions_to_repo(self, fresh_page, workspace, username_1, password_1, full_username_2):
-        # TEST_REPO_NAME = "test_repo_permissions_22936a3a"
+    def test_user2_delete_permissions_to_repo(self, fresh_page, workspace, admin_email, admin_password,
+                                              read_full_username):
         login_page = AtlassianLoginPage(fresh_page, fresh_page.context, workspace)
-        login_page.login(username_1, password_1, save_state=False)
+        login_page.login(admin_email, admin_password, save_state=False)
         assert login_page.success_login_img.is_visible(), "Login failed or success image not visible."
         repo_page = RepoSourcePage(fresh_page, workspace, TEST_REPO_NAME)
         repo_page.goto()
@@ -211,16 +209,15 @@ class TestsPermissionsWebUi:
         repo_permissions_page.permission_table.wait_for(state="visible")
         assert repo_permissions_page.page_title.is_visible()
         assert repo_permissions_page.permission_table.is_visible()
-        repo_permissions_page.users_permissions_table.click_remove_button(full_username_2)
+        repo_permissions_page.users_permissions_table.click_remove_button(read_full_username)
         remove_access_modal = RemoveRepoAccessModal(fresh_page)
         assert remove_access_modal.modal_title.inner_text() == 'Remove access'
         remove_access_modal.click_remove_button()
-        assert repo_permissions_page.users_permissions_table.get_row_by_username(full_username_2) is None
+        assert repo_permissions_page.users_permissions_table.get_row_by_username(read_full_username) is None
 
-    def test_user2_login_with_no_permissions_to_repo(self, fresh_page, workspace, username_2, password_2):
-        # TEST_REPO_NAME = "test_repo_permissions_22936a3a"
+    def test_user2_login_with_no_permissions_to_repo(self, fresh_page, workspace, read_email, read_password):
         login_page = AtlassianLoginPage(fresh_page, fresh_page.context, workspace)
-        login_page.login(username_2, password_2, save_state=False)
+        login_page.login(read_email, read_password, save_state=False)
         assert login_page.success_login_img.is_visible(), "Login failed or success image not visible."
         repo_page = RepoSourcePage(fresh_page, workspace, TEST_REPO_NAME)
         repo_page.goto()

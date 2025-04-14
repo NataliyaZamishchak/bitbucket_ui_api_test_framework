@@ -19,9 +19,10 @@ ADD_NEW_TEXT_CHANGES = "Add new text to README.md"
 DEFAULT_COMMIT_MESSAGE = 'README.md edited online with Bitbucket'
 
 class TestsWebUi:
-    def test_login_setup(self, page, username_1, password_1, workspace):
+
+    def test_login_setup(self, page, admin_email, admin_password, workspace):
         login_page = AtlassianLoginPage(page, page.context, workspace)
-        login_page.login(username_1, password_1)
+        login_page.login(admin_email, admin_password)
         assert login_page.success_login_img.is_visible(), "Login failed or success image not visible."
 
     def test_create_repo(self, page, workspace):
