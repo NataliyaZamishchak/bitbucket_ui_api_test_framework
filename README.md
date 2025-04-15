@@ -127,6 +127,7 @@ These tests are located in `tests/test_git_operations.py` and cover the followin
 
 - All actions are logged in console and added to file `logs/test.log`.
 - All tests, classes, functions are pytest documented.
+- Allure report generated under `allure-report`
 
 ### Useful Links
 
