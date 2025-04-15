@@ -22,7 +22,7 @@ Before running the tests:
 
    #### Bitbucket Workspace
 
-   - `WORKSPACE` — Your Bitbucket Workspace name (with at least 1 project added) .
+   - `WORKSPACE` — Your Bitbucket Workspace name (with at least 1 project added).
 
    #### Admin User Credentials
 
@@ -46,7 +46,7 @@ Before running the tests:
    - `GIT_APP_PASSWORD` — Git App Password (set up for particular repo).
    - `GIT_REPO_NAME` — Name of the repository for testing Git operations.
 
-2. Go through OAuth2 implementations steps (1-3) from [OAuth2 Documentation for Bitbucket](https://developer.atlassian.com/cloud/bitbucket/rest/intro/#oauth-2-0) using `BITBUCKET_CLIENT_ID` and `BITBUCKET_CLIENT_SECRET`. Result output write to `token.json` file in the root of this repo.
+2. Go through OAuth2 implementation steps (1-3) from [OAuth2 Documentation for Bitbucket](https://developer.atlassian.com/cloud/bitbucket/rest/intro/#oauth-2-0) using `BITBUCKET_CLIENT_ID` and `BITBUCKET_CLIENT_SECRET`. Write the result output to the `token.json` file in the root of this repository.
 
 ## Running Tests
 
