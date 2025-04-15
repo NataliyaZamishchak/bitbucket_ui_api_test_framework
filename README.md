@@ -24,12 +24,12 @@ Before running the tests:
 
    - `WORKSPACE` — Your Bitbucket Workspace name (with at least 1 project added).
 
-   #### Admin User Credentials
+   #### Admin User Credentials (granted User and Admin role for workspace and project)
 
    - `ADMIN_EMAIL` — Admin email address.
    - `ADMIN_PASSWORD` — Admin password.
 
-   #### Read-Only User Credentials
+   #### Read-Only User Credentials (granted User role for workspace and project)
 
    - `READ_EMAIL` — Email address of the read-only user.
    - `READ_PASSWORD` — Password of the read-only user.
