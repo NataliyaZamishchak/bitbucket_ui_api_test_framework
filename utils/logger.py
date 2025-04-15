@@ -29,7 +29,6 @@ def get_logger(name: str) -> logging.Logger:
             file_formatter = logging.Formatter(format_str, datefmt=datefmt)
             file_handler.setFormatter(file_formatter)
             logger.addHandler(file_handler)
-            logger.info(f"File logging configured successfully at {log_path / 'test.log'}")
 
         except Exception as e:
             logger.error(f"Failed to configure logger: {e}")

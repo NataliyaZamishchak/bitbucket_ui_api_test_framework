@@ -11,3 +11,4 @@ allure-results/
 allure-report/
 cloned_repo/
 logs/
+.idea/
