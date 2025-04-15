@@ -15,6 +15,9 @@ from pom.pages.repo.repo_settings.repo_permissions_page import RepoPermissionsPa
 from pom.pages.repo.source.repo_source_file_page import RepoSourceFilePage
 from pom.pages.repo.source.repo_source_page import RepoSourcePage
 import uuid
+from utils.logger import get_logger
+
+logger = get_logger(__name__)
 
 TEST_REPO_NAME = f"test_repo_permissions_{uuid.uuid4().hex[:8]}"
 TEST_BRANCH_NAME = f"test_branch_{uuid.uuid4().hex[:8]}"
@@ -24,8 +27,10 @@ DEFAULT_COMMIT_MESSAGE = 'README.md edited online with Bitbucket'
 ERROR_SOURCE_REPO_PAGE = 'Repository not found'
 
 class TestsPermissionsWebUi:
+    """Test suite for testing repository permissions via the Bitbucket Web UI."""
 
     def test_create_repo_for_permissions_tests(self, fresh_page, workspace, admin_email, admin_password):
+        """Test creating a repository for permissions testing."""
         login_page = AtlassianLoginPage(fresh_page, fresh_page.context, workspace)
         login_page.login(admin_email, admin_password, save_state=False)
         assert login_page.success_login_img.is_visible(), "Login failed or success image not visible."
@@ -42,6 +47,7 @@ class TestsPermissionsWebUi:
         assert repo_page.page_title.text_content() == TEST_REPO_NAME
 
     def test_create_pr_for_permissions_tests(self, fresh_page, workspace, admin_email, admin_password):
+        """Test creating a pull request for permissions testing."""
         login_page = AtlassianLoginPage(fresh_page, fresh_page.context, workspace)
         login_page.login(admin_email, admin_password, save_state=False)
         assert login_page.success_login_img.is_visible(), "Login failed or success image not visible."
@@ -81,6 +87,7 @@ class TestsPermissionsWebUi:
 
     def test_give_user2_read_permissions_to_repo(self, fresh_page, workspace, admin_email, admin_password,
                                                  read_full_username):
+        """Test giving a user read permissions to the repository."""
         login_page = AtlassianLoginPage(fresh_page, fresh_page.context, workspace)
         login_page.login(admin_email, admin_password, save_state=False)
         assert login_page.success_login_img.is_visible(), "Login failed or success image not visible."
@@ -103,6 +110,7 @@ class TestsPermissionsWebUi:
         assert user_data.get("Access level", '') == "Repository"
 
     def test_user2_login_with_read_permissions_to_repo(self, fresh_page, workspace, read_email, read_password):
+        """Test user login with read permissions to the repository."""
         login_page = AtlassianLoginPage(fresh_page, fresh_page.context, workspace)
         login_page.login(read_email, read_password, save_state=False)
         assert login_page.success_login_img.is_visible(), "Login failed or success image not visible."
@@ -127,6 +135,7 @@ class TestsPermissionsWebUi:
 
     def test_give_user2_write_permissions_to_repo(self, fresh_page, workspace, admin_email, admin_password,
                                                   read_full_username):
+        """Test user login with read permissions to the repository."""
         login_page = AtlassianLoginPage(fresh_page, fresh_page.context, workspace)
         login_page.login(admin_email, admin_password, save_state=False)
         assert login_page.success_login_img.is_visible(), "Login failed or success image not visible."
@@ -146,6 +155,7 @@ class TestsPermissionsWebUi:
         assert user_data.get("Access level", '') == "Repository"
 
     def test_user2_login_with_write_permissions_to_repo(self, fresh_page, workspace, read_email, read_password):
+        """Test user login with write permissions."""
         login_page = AtlassianLoginPage(fresh_page, fresh_page.context, workspace)
         login_page.login(read_email, read_password, save_state=False)
         assert login_page.success_login_img.is_visible(), "Login failed or success image not visible."
@@ -196,6 +206,7 @@ class TestsPermissionsWebUi:
 
     def test_user2_delete_permissions_to_repo(self, fresh_page, workspace, admin_email, admin_password,
                                               read_full_username):
+        """Test removing user permissions from the repository."""
         login_page = AtlassianLoginPage(fresh_page, fresh_page.context, workspace)
         login_page.login(admin_email, admin_password, save_state=False)
         assert login_page.success_login_img.is_visible(), "Login failed or success image not visible."
@@ -216,6 +227,7 @@ class TestsPermissionsWebUi:
         assert repo_permissions_page.users_permissions_table.get_row_by_username(read_full_username) is None
 
     def test_user2_login_with_no_permissions_to_repo(self, fresh_page, workspace, read_email, read_password):
+        """Test user login with no permissions to the repository."""
         login_page = AtlassianLoginPage(fresh_page, fresh_page.context, workspace)
         login_page.login(read_email, read_password, save_state=False)
         assert login_page.success_login_img.is_visible(), "Login failed or success image not visible."

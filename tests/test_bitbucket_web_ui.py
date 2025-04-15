@@ -12,6 +12,9 @@ from pom.pages.repo.pr.repo_pr_page import RepoPrPage
 from pom.pages.repo.source.repo_source_file_page import RepoSourceFilePage
 from pom.pages.repo.source.repo_source_page import RepoSourcePage
 import uuid
+from utils.logger import get_logger
+
+logger = get_logger(__name__)
 
 TEST_REPO_NAME = f"test_repo_{uuid.uuid4().hex[:8]}"
 TEST_BRANCH_NAME = f"test_branch_{uuid.uuid4().hex[:8]}"
@@ -19,13 +22,16 @@ ADD_NEW_TEXT_CHANGES = "Add new text to README.md"
 DEFAULT_COMMIT_MESSAGE = 'README.md edited online with Bitbucket'
 
 class TestsWebUi:
+    """Test suite for Bitbucket Web UI functionality."""
 
     def test_login_setup(self, page, admin_email, admin_password, workspace):
+        """Test admin login to Bitbucket."""
         login_page = AtlassianLoginPage(page, page.context, workspace)
         login_page.login(admin_email, admin_password)
         assert login_page.success_login_img.is_visible(), "Login failed or success image not visible."
 
     def test_create_repo(self, page, workspace):
+        """Test creating a new repository."""
         overview_page = OverviewPage(page, workspace)
         overview_page.goto()
         overview_page.header.click_create_button()
@@ -39,6 +45,7 @@ class TestsWebUi:
         assert repo_page.page_title.text_content() == TEST_REPO_NAME
 
     def test_create_pr(self, page, workspace):
+        """Test creating a pull request."""
         repo_page = RepoSourcePage(page, workspace, TEST_REPO_NAME)
         repo_page.goto()
         repo_page.header.click_create_button()
@@ -74,6 +81,7 @@ class TestsWebUi:
         assert pr_page.pr_status.text_content() == "Open"
 
     def test_review_pr_and_merge(self, page, workspace):
+        """Test reviewing and merging a pull request."""
         pr_page = RepoPrPage(page, workspace, TEST_REPO_NAME, 1)
         pr_page.goto()
         assert pr_page.page_title.text_content() == DEFAULT_COMMIT_MESSAGE
